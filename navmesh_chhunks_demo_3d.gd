@@ -21,10 +21,10 @@ var character_speed := 10
 @onready var monoNavAgent := $Mono/NavigationAgent3D as NavigationAgent3D
 @onready var monoCurrentCheckpoint: Area3D = $ParseRootNode/Checkpoint_1
 
-@export var max_speed = 350
-@export var steer_force = 0.1
-@export var look_ahead = 100
-@export var num_rays = 8
+@export var max_speed := 350
+@export var steer_force := 0.1
+@export var look_ahead := 100
+@export var num_rays := 8
 
 # context array
 var ray_directions = []
@@ -60,12 +60,12 @@ func _ready() -> void:
 
 	create_region_chunks(%ChunksContainer, source_geometry, chunk_size * cell_size, agent_radius)
 
-	# interest.resize(num_rays)
-	# danger.resize(num_rays)
-	# ray_directions.resize(num_rays)
-	# for i in num_rays:
-	# 	var angle = i * 2 * PI / num_rays
-	# 	ray_directions[i] = Vector2.RIGHT.rotated(angle)
+	interest.resize(num_rays)
+	danger.resize(num_rays)
+	ray_directions.resize(num_rays)
+	for i in num_rays:
+		var angle = i * 2 * PI / num_rays
+		ray_directions[i] = Vector2.RIGHT.rotated(angle)
 
 static func create_region_chunks(chunks_root_node: Node, p_source_geometry: NavigationMeshSourceGeometryData3D, p_chunk_size: float, p_agent_radius: float) -> void:
 	# We need to know how many chunks are required for the input geometry.
