@@ -36,9 +36,9 @@ func _ready() -> void:
 # 	pass
 
 func _physics_process(_delta: float) -> void:
-	engine_force = 250.5
+	engine_force = clamp(25.5 - _delta * 5, -20 ,5.5)
 	steer_force = 2
-	steering = -0.5
+	steering = -0.05
 	# set_interest()
 	# set_danger()
 	# choose_direction()

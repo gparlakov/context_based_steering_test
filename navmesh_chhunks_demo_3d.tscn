@@ -293,7 +293,7 @@ mesh = SubResource("BoxMesh_cep20")
 
 [node name="Mono" type="VehicleBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.46171, 1.79371, 0.0513568)
-mass = 50.0
+mass = 5.0
 physics_material_override = SubResource("PhysicsMaterial_p577t")
 script = ExtResource("2_4bs5m")
 
