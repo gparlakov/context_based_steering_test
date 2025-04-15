@@ -44,6 +44,6 @@ class Vector:
 			prop = object.get_meta(property)
 		if(prop != null):
 			var start = camera.unproject_position(object.global_transform.origin)
-			var end = camera.unproject_position(object.global_transform.origin + prop * scale)
+			var end = camera.unproject_position(prop * scale)
 			debugCanvas.draw_line(start, end, color, width)
 			debugCanvas.draw_triangle(end, start.direction_to(end), width*2, color)
