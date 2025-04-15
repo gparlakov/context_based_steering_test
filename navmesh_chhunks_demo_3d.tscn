@@ -72,10 +72,6 @@ height = 1.56431
 
 [node name="NavMeshChunksDemo3D" type="Node3D"]
 script = ExtResource("1_027f2")
-max_speed = null
-steer_force = null
-look_ahead = null
-num_rays = null
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 15, 18, 15)
@@ -197,6 +193,7 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer"]
 offset_right = 40.0
@@ -299,14 +296,11 @@ shape = SubResource("CapsuleShape3D_qr3ec")
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="Mono"]
 
 [node name="DebugOverlay" type="CanvasLayer" parent="."]
-visible = false
 script = ExtResource("2_1tqsb")
 
 [node name="DebugDraw3D" type="Control" parent="DebugOverlay"]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-tooltip_text = "test"
 script = ExtResource("3_4627k")

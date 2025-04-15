@@ -67,6 +67,9 @@ func _ready() -> void:
 		var angle = i * 2 * PI / num_rays
 		ray_directions[i] = Vector2.RIGHT.rotated(angle)
 
+	player.set_meta("next_position", Vector3.ZERO)
+	$DebugOverlay.draw.add_vector(player, "next_position", 2, 4, Color(1,1,1))
+
 static func create_region_chunks(chunks_root_node: Node, p_source_geometry: NavigationMeshSourceGeometryData3D, p_chunk_size: float, p_agent_radius: float) -> void:
 	# We need to know how many chunks are required for the input geometry.
 	# So first get an axis aligned bounding box that covers all vertices.
@@ -273,11 +276,10 @@ func _player_process(delta: float, p: Node3D, navAgent: NavigationAgent3D) -> vo
 		navAgent.set_target_position(currentCheckpoint.global_position)
 		return
 	
-
 	var next_position := navAgent.get_next_path_position()
+	p.set_meta("next_position", next_position)
 	var offset := next_position - p.global_position
 	p.global_position = p.global_position.move_toward(next_position, delta * character_speed)
-
 	# Make the robot look at the direction we're traveling.
 	# Clamp Y to 0 so the robot only looks left and right, not up/down.
 	offset.y = 0

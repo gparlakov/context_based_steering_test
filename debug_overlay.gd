@@ -1,8 +1,11 @@
 extends CanvasLayer
 
-@onready var draw = $DebugDraw3D
+const DebugDraw3D := preload("res://debug_draw_3d.gd")
+
+@onready var draw: DebugDraw3D
 
 func _ready():
+	draw = $DebugDraw3D
 	if not InputMap.has_action("toggle_debug"):
 		InputMap.add_action("toggle_debug")
 		var ev = InputEventKey.new()
