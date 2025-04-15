@@ -60,12 +60,12 @@ func _ready() -> void:
 
 	create_region_chunks(%ChunksContainer, source_geometry, chunk_size * cell_size, agent_radius)
 
-	interest.resize(num_rays)
-	danger.resize(num_rays)
-	ray_directions.resize(num_rays)
-	for i in num_rays:
-		var angle = i * 2 * PI / num_rays
-		ray_directions[i] = Vector2.RIGHT.rotated(angle)
+	# interest.resize(num_rays)
+	# danger.resize(num_rays)
+	# ray_directions.resize(num_rays)
+	# for i in num_rays:
+	# 	var angle = i * 2 * PI / num_rays
+	# 	ray_directions[i] = Vector2.RIGHT.rotated(angle)
 
 static func create_region_chunks(chunks_root_node: Node, p_source_geometry: NavigationMeshSourceGeometryData3D, p_chunk_size: float, p_agent_radius: float) -> void:
 	# We need to know how many chunks are required for the input geometry.
@@ -194,12 +194,12 @@ func _physics_process(delta: float) -> void:
 	_player_process(delta, player, playerNavAgent)
 	_player_process(delta, player2, playerNavAgent2)
 
-	if monoNavAgent.is_navigation_finished():
-		var currentIndex = checkpoints.find(monoCurrentCheckpoint)
-		var next = wrap(currentIndex + 1, 0, 3)
-		monoCurrentCheckpoint = checkpoints[next]
-		monoNavAgent.set_target_position(monoCurrentCheckpoint.global_position)
-		return
+	# if monoNavAgent.is_navigation_finished():
+	# 	var currentIndex = checkpoints.find(monoCurrentCheckpoint)
+	# 	var next = wrap(currentIndex + 1, 0, 3)
+	# 	monoCurrentCheckpoint = checkpoints[next]
+	# 	monoNavAgent.set_target_position(monoCurrentCheckpoint.global_position)
+	# 	return
 	
 
 	#var next_position := monoNavAgent.get_next_path_position()
