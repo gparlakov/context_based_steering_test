@@ -21,22 +21,6 @@ var character_speed := 10
 @onready var monoNavAgent := $Mono/NavigationAgent3D as NavigationAgent3D
 @onready var monoCurrentCheckpoint: Area3D = $ParseRootNode/Checkpoint_1
 
-@export var max_speed := 350
-@export var steer_force := 0.1
-@export var look_ahead := 100
-@export var num_rays := 8
-
-# context array
-var ray_directions = []
-var interest = []
-var danger = []
-
-var chosen_dir = Vector2.ZERO
-var velocity = Vector2.ZERO
-var acceleration = Vector2.ZERO
-
-
-
 var path_start_position: Vector3
 
 func _ready() -> void:
@@ -60,15 +44,9 @@ func _ready() -> void:
 
 	create_region_chunks(%ChunksContainer, source_geometry, chunk_size * cell_size, agent_radius)
 
-	interest.resize(num_rays)
-	danger.resize(num_rays)
-	ray_directions.resize(num_rays)
-	for i in num_rays:
-		var angle = i * 2 * PI / num_rays
-		ray_directions[i] = Vector2.RIGHT.rotated(angle)
-
-	player.set_meta("next_position", Vector3.ZERO)
-	$DebugOverlay.draw.add_vector(player, "next_position", 1, 1, Color(1,0,1))
+	# player.set_meta("next_position", Vector3.ZERO)
+	# $DebugOverlay.draw.add_vector(player, "next_position", 1, 1, Color(1,0,1))
+	# $DebugOverlay.draw.add_vector(player, "next_position", 1, 1, Color(1,0,1))
 
 static func create_region_chunks(chunks_root_node: Node, p_source_geometry: NavigationMeshSourceGeometryData3D, p_chunk_size: float, p_agent_radius: float) -> void:
 	# We need to know how many chunks are required for the input geometry.
@@ -221,52 +199,7 @@ func _physics_process(delta: float) -> void:
 	# offset.y = 0
 	# if not offset.is_zero_approx():
 	# 	mono.look_at(mono.global_position + offset, Vector3.UP)
-# 	set_interest()
-# 	set_danger()
-# 	choose_direction()
-# 	var desired_velocity = chosen_dir.rotated(rotation) * max_speed
-# 	velocity = velocity.linear_interpolate(desired_velocity, steer_force)
-# 	rotation = velocity.angle()
-# 	move_and_collide(velocity * delta)
-	
-	
 
-# func set_interest():
-# 	# Set interest in each slot based on world direction
-# 	if owner and owner.has_method("get_path_direction"):
-# 		var path_direction = owner.get_path_direction(position)
-# 		for i in num_rays:
-# 			var d = ray_directions[i].rotated(rotation).dot(path_direction)
-# 			interest[i] = max(0, d)
-# 	# If no world path, use default interest
-# 	else:
-# 		set_default_interest()
-
-# func set_default_interest():
-# 	# Default to moving forward
-# 	for i in num_rays:
-# 		var d = ray_directions[i].rotated(rotation).dot(transform.x)
-# 		interest[i] = max(0, d)
-
-# func set_danger():
-# 	# Cast rays to find danger directions
-# 	var space_state = get_world_2d().direct_space_state
-# 	for i in num_rays:
-# 		var result = space_state.intersect_ray(position,
-# 				position + ray_directions[i].rotated(rotation) * look_ahead,
-# 				[self])
-# 		danger[i] = 1.0 if result else 0.0
-
-# func choose_direction():
-# 	# Eliminate interest in slots with danger
-# 	for i in num_rays:
-# 		if danger[i] > 0.0:
-# 			interest[i] = 0.0
-# 	# Choose direction based on remaining interest
-# 	chosen_dir = Vector2.ZERO
-# 	for i in num_rays:
-# 		chosen_dir += ray_directions[i] * interest[i]
-# 	chosen_dir = chosen_dir.normalized()
 
 func _player_process(delta: float, p: Node3D, navAgent: NavigationAgent3D) -> void: 
 	if navAgent.is_navigation_finished():
@@ -277,7 +210,7 @@ func _player_process(delta: float, p: Node3D, navAgent: NavigationAgent3D) -> vo
 		return
 	
 	var next_position := navAgent.get_next_path_position()
-	p.set_meta("next_position", next_position)
+	# p.set_meta("next_position", next_position)
 	var offset := next_position - p.global_position
 	p.global_position = p.global_position.move_toward(next_position, delta * character_speed)
 	# Make the robot look at the direction we're traveling.

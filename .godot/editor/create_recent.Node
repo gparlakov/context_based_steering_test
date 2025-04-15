@@ -1,8 +1,8 @@
+MeshInstance3D
+CollisionShape3D
 Control
 CanvasLayer
 NavigationAgent3D
-MeshInstance3D
-CollisionShape3D
 VehicleWheel3D
 VehicleBody3D
 MultiMeshInstance3D

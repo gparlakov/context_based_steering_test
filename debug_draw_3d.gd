@@ -24,12 +24,12 @@ func add_vector(object, property, _scale = 1.0, width = 1.0, color = Color(0, 1,
 
 class Vector:
 	var object: Variant # The node to follow
-	var property: StringName  # The property to draw
+	var property: Callable  # The property to draw
 	var scale:= 1.0  # Scale factor
 	var width:= 1.0  # Line width
 	var color: Color  # Draw color
 
-	func _init(_object: Variant, _property: String, _scale = 1.0, _width = 1.0, _color = Color(0, 1, 0)):
+	func _init(_object: Variant, _property: Callable, _scale = 1.0, _width = 1.0, _color = Color(0, 1, 0)):
 		object = _object
 		property = _property
 		scale = _scale
@@ -37,11 +37,10 @@ class Vector:
 		color = _color
 
 	func draw(debugCanvas: Control, camera: Camera3D):
-		if(object == null || object.global_transform == null):
+		if(object == null || object.global_transform == null || property == null):
 			return
-		var prop = object.get(property)
-		if(prop == null): 
-			prop = object.get_meta(property)
+		var prop = property.call()
+		
 		if(prop != null):
 			var start = camera.unproject_position(object.global_transform.origin)
 			var end = camera.unproject_position(prop * scale)

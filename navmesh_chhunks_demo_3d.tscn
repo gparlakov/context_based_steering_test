@@ -1,7 +1,8 @@
-[gd_scene load_steps=24 format=3 uid="uid://cir4dtbp7i1ky"]
+[gd_scene load_steps=27 format=3 uid="uid://cir4dtbp7i1ky"]
 
 [ext_resource type="Script" path="res://navmesh_chhunks_demo_3d.gd" id="1_027f2"]
 [ext_resource type="Script" path="res://debug_overlay.gd" id="2_1tqsb"]
+[ext_resource type="Script" path="res://mono.gd" id="2_4bs5m"]
 [ext_resource type="Script" path="res://debug_draw_3d.gd" id="3_4627k"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_p73ky"]
@@ -21,10 +22,10 @@ glow_enabled = true
 albedo_color = Color(0.2, 0.2, 0.2, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_yn2x6"]
-size = Vector3(55, 1, 55)
+size = Vector3(75, 1, 75)
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_7rw3x"]
-points = PackedVector3Array(-7.5, -0.5, -7.5, -7.5, 0.5, -7.5, 7.5, -0.5, -7.5, -7.5, -0.5, 7.5, -7.5, 0.5, 7.5, 7.5, 0.5, -7.5, 7.5, -0.5, 7.5, 7.5, 0.5, 7.5)
+points = PackedVector3Array(-75, -0.5, -75, -75, 0.5, -75, 75, -0.5, -75, -75, -0.5, 75, -75, 0.5, 75, 75, 0.5, -75, 75, -0.5, 75, 75, 0.5, 75)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3kxje"]
 albedo_color = Color(0.5, 0, 0, 1)
@@ -65,20 +66,36 @@ albedo_color = Color(0.0862745, 1, 1, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_cep20"]
 material = SubResource("StandardMaterial3D_pdfgr")
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p577t"]
+friction = 0.5
+
 [sub_resource type="TorusMesh" id="TorusMesh_y37mu"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qr3ec"]
-height = 1.56431
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_awg2w"]
+radius = 0.905719
+height = 3.78636
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3bipe"]
 
 [node name="NavMeshChunksDemo3D" type="Node3D"]
 script = ExtResource("1_027f2")
 
+[node name="DebugOverlay" type="CanvasLayer" parent="."]
+script = ExtResource("2_1tqsb")
+
+[node name="DebugDraw3D" type="Control" parent="DebugOverlay"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_4627k")
+
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 15, 18, 15)
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 10, 20, 15)
 projection = 1
 current = true
 fov = 40.0
-size = 47.5
+size = 45.359
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 0, 0)
@@ -97,12 +114,10 @@ mesh = SubResource("BoxMesh_yn2x6")
 [node name="StaticBody3D" type="StaticBody3D" parent="ParseRootNode/Ground"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ParseRootNode/Ground/StaticBody3D"]
-transform = Transform3D(3.64537, 0, 0, 0, 1, 0, 0, 0, 3.66086, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_7rw3x")
 
 [node name="CenterBlock" type="MeshInstance3D" parent="ParseRootNode"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.61266, 22.4802, 2.90729)
-visible = false
 material_override = SubResource("StandardMaterial3D_3kxje")
 mesh = SubResource("BoxMesh_hdqb8")
 
@@ -119,7 +134,6 @@ shape = SubResource("ConvexPolygonShape3D_ydj0h")
 
 [node name="CenterBlock2" type="MeshInstance3D" parent="ParseRootNode"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.45585, 23.5361, -2.11102)
-visible = false
 material_override = SubResource("StandardMaterial3D_3kxje")
 mesh = SubResource("BoxMesh_hdqb8")
 
@@ -278,29 +292,49 @@ mesh = SubResource("BoxMesh_cep20")
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="Obj2"]
 
 [node name="Mono" type="VehicleBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.46171, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.46171, 1.79371, 0.0513568)
+mass = 50.0
+physics_material_override = SubResource("PhysicsMaterial_p577t")
+script = ExtResource("2_4bs5m")
 
 [node name="VehicleWheel3D" type="VehicleWheel3D" parent="Mono"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00265, 0)
-use_as_traction = true
+transform = Transform3D(1, 0, 0, 0, 2.02589, 0, 0, 0, 2.02589, -0.769812, -0.180071, 0)
 use_as_steering = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Mono/VehicleWheel3D"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(-2.2116e-08, -1, 0, 0.505954, -4.37114e-08, 0, 0, 0, 0.505954, 0, 0, 0)
 mesh = SubResource("TorusMesh_y37mu")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Mono"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.74849, 0, 1.19225, 0)
-shape = SubResource("CapsuleShape3D_qr3ec")
+[node name="VehicleWheel3D2" type="VehicleWheel3D" parent="Mono"]
+transform = Transform3D(1, 0, 0, 0, 2.02589, 0, 0, 0, 2.02589, 0.963138, -0.180071, 0)
+use_as_steering = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Mono/VehicleWheel3D2"]
+transform = Transform3D(-2.2116e-08, -1, 0, 0.505954, -4.37114e-08, 0, 0, 0, 0.505954, 0, 0, 0)
+mesh = SubResource("TorusMesh_y37mu")
+
+[node name="VehicleWheel3D3" type="VehicleWheel3D" parent="Mono"]
+transform = Transform3D(1, 0, 0, 0, 2.02589, 0, 0, 0, 2.02589, -0.769812, -0.180071, -2.71354)
+use_as_traction = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Mono/VehicleWheel3D3"]
+transform = Transform3D(-2.2116e-08, -1, 0, 0.505954, -4.37114e-08, 0, 0, 0, 0.505954, 0, 0, 0)
+mesh = SubResource("TorusMesh_y37mu")
+
+[node name="VehicleWheel3D4" type="VehicleWheel3D" parent="Mono"]
+transform = Transform3D(1, 0, 0, 0, 2.02589, 0, 0, 0, 2.02589, 0.963138, -0.180071, -2.71354)
+use_as_traction = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Mono/VehicleWheel3D4"]
+transform = Transform3D(-2.2116e-08, -1, 0, 0.505954, -4.37114e-08, 0, 0, 0, 0.505954, 0, 0, 0)
+mesh = SubResource("TorusMesh_y37mu")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="Mono"]
 
-[node name="DebugOverlay" type="CanvasLayer" parent="."]
-script = ExtResource("2_1tqsb")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mono"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.184189, -1.40128)
+shape = SubResource("CapsuleShape3D_awg2w")
 
-[node name="DebugDraw3D" type="Control" parent="DebugOverlay"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("3_4627k")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Mono/CollisionShape3D"]
+transform = Transform3D(1.46743, 0, 0, 0, 1.86017, -7.10543e-15, 0, 0, 1.63429, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_3bipe")
