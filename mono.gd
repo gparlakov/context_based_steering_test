@@ -27,19 +27,20 @@ func _ready() -> void:
 	for i in num_rays:
 		var angle = i * 2 * PI / num_rays
 		ray_directions[i] = (transform.basis.z).rotated(Vector3.UP, angle)
-		# var r = ray_directions[i]
-		var color = Color(1,1,0) if i == 0 else Color(0,0,1)
-
-		debug.draw.add_vector(self, func():return transform.basis.z, 4, 2, color)
-	debug.draw.add_property(self, "linear_velocity")
+		# debug
+		debug.draw.add_vector(self, func():return ray_directions[i], 4, 2, Color(1,1,0) if i == 0 else Color(0,0,1))
+	
 	
 	# timer for engine force 
 	timer = Timer.new()
 	add_child(timer)
 	timer.one_shot = true;
-	timer.start(2.5)
-	debug.draw.add_property(self, "timer_nice", func(): return "%4.4f" % timer.time_left)
-	debug.draw.add_property(timer, "time_left")
+	timer.start(4)
+
+	# debug
+	debug.draw.add_property(self, "interest")
+	debug.draw.add_property(self, "linear_velocity")
+	debug.draw.add_property(self, "timer_nice", func(): return "%.2f" % timer.time_left)
 
 
 # # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -57,7 +58,9 @@ func _physics_process(_delta: float) -> void:
 		engine_force = 0;
 	steer_force = 2
 	steering = -0.05
+
 	set_interest()
+
 	# set_danger()
 	# choose_direction()
 	# var desired_velocity = chosen_dir.rotated(rotation) * max_speed
