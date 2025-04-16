@@ -5,18 +5,22 @@ extends VehicleBody3D
 @export var look_ahead := 100
 @export var num_rays := 8
 
+@onready var navAgent = $NavigationAgent3D as NavigationAgent3D
+
 # context array
 var ray_directions :Array[Vector3]= []
 var interest = []
 var danger = []
 
-var chosen_dir = Vector2.ZERO
+var chosen_dir = Vector3.ZERO
 var velocity = Vector2.ZERO
 var acceleration = Vector2.ZERO
 
 const DebugOverlay = preload("res://debug_overlay.gd")
 var debug: DebugOverlay
 var timer
+var turnDirection
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -28,9 +32,8 @@ func _ready() -> void:
 		var angle = i * 2 * PI / num_rays
 		ray_directions[i] = (transform.basis.z).rotated(Vector3.UP, angle)
 		# debug
-		debug.draw.add_vector(self, func():return ray_directions[i], 4, 2, Color(1,1,0) if i == 0 else Color(0,0,1))
-	
-	
+		debug.draw.add_vector(self, func():return ray_directions[i], 2, 1, Color(1,1,0) if i == 0 else Color(0,0,1))
+
 	# timer for engine force 
 	timer = Timer.new()
 	add_child(timer)
@@ -38,10 +41,13 @@ func _ready() -> void:
 	timer.start(4)
 
 	# debug
-	debug.draw.add_property(self, "interest")
-	debug.draw.add_property(self, "linear_velocity")
-	debug.draw.add_property(self, "timer_nice", func(): return "%.2f" % timer.time_left)
-
+	debug.draw.add_vector(self, func(): return chosen_dir)
+	debug.draw.add_property(self, "interest", func(): return interest.reduce(func(acc, i): return acc + ", %.2f" % i, ""))
+	# debug.draw.add_property(self, "linear_velocity")
+	# debug.draw.add_property(self, "timer_nice", func(): return "%.2f" % timer.time_left)
+	debug.draw.add_property(self, "danger")
+	debug.draw.add_property(self, "steering")
+	debug.draw.add_property(self, "turnDirection")
 
 # # Called every frame. 'delta' is the elapsed time since the previous frame.
 # func _process(delta: float) -> void:
@@ -54,15 +60,19 @@ func _physics_process(_delta: float) -> void:
 		ray_directions[i] = (transform.basis.z).rotated(Vector3.UP, angle)
 	engine_force = 20
 
-	if(timer.is_stopped()):
-		engine_force = 0;
 	steer_force = 2
-	steering = -0.05
+	steering = 0
 
 	set_interest()
+	set_danger()
 
 	# set_danger()
-	# choose_direction()
+	choose_direction()
+	turnDirection = (transform.basis.z.normalized()).dot(chosen_dir.normalized())
+	print("==== chosen dir is %s" % ("to the back" if(turnDirection < 0) else "in front"))
+	var steerRight = -1 if (transform.basis.z - chosen_dir).x > 0 else 1
+	print("right when positive x %.2f" % steerRight)
+	steering = clampf((1 - abs(turnDirection))*steerRight, -0.4, 0.4)
 	# var desired_velocity = chosen_dir.rotated(rotation) * max_speed
 	# velocity = velocity.linear_interpolate(desired_velocity, steer_force)
 	# rotation = velocity.angle()
@@ -71,9 +81,10 @@ func _physics_process(_delta: float) -> void:
 	
 
 func set_interest():
-	# Set interest in each slot based on world direction
-	if owner and owner.has_method("get_path_direction"):
-		var path_direction = owner.get_path_direction(position)
+	## when the navigation is finished and owner
+	if(navAgent.is_navigation_finished() && owner and owner.has_method("get_next_position") && false):
+	
+		var path_direction = owner.get_next_position(self)
 		for i in num_rays:
 			var d = ray_directions[i].dot(path_direction)
 			interest[i] = max(0, d)
@@ -86,26 +97,26 @@ func set_default_interest():
 	for i in num_rays:
 		var d = ray_directions[i].dot(-transform.basis.z)
 		interest[i] = max(0, d)
-		# var r = interest[i]
-		# debug.draw.add_vector(self, func():return r, 6, 2) 
-	# print(interest)
 
-# func set_danger():
-# 	# Cast rays to find danger directions
-# 	var space_state = get_world_2d().direct_space_state
-# 	for i in num_rays:
-# 		var result = space_state.intersect_ray(position,
-# 				position + ray_directions[i].rotated(rotation) * look_ahead,
-# 				[self])
-# 		danger[i] = 1.0 if result else 0.0
+func set_danger():
+	# Cast rays to find danger directions
+	var space_state = get_world_3d().direct_space_state
+	for i in num_rays:
+		var result = space_state.intersect_ray(PhysicsRayQueryParameters3D.create(
+			position,
+			position + ray_directions[i] * look_ahead,
+			1,
+			[self.get_rid()]
+		))
+		danger[i] = 1.0 if result else 0.0
 
-# func choose_direction():
+func choose_direction():
 # 	# Eliminate interest in slots with danger
 # 	for i in num_rays:
 # 		if danger[i] > 0.0:
 # 			interest[i] = 0.0
 # 	# Choose direction based on remaining interest
-# 	chosen_dir = Vector2.ZERO
+	chosen_dir = -(global_transform.origin - owner.path_start_position) if owner && owner.path_start_position else Vector3.RIGHT
 # 	for i in num_rays:
 # 		chosen_dir += ray_directions[i] * interest[i]
 # 	chosen_dir = chosen_dir.normalized()

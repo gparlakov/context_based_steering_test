@@ -21,6 +21,8 @@ var character_speed := 10
 @onready var monoNavAgent := $Mono/NavigationAgent3D as NavigationAgent3D
 @onready var monoCurrentCheckpoint: Area3D = $ParseRootNode/Checkpoint_1
 
+var currentCheckpointByNode: Dictionary = {}
+
 var path_start_position: Vector3
 
 func _ready() -> void:
@@ -144,63 +146,38 @@ static func calculate_source_geometry_bounds(p_source_geometry: NavigationMeshSo
 	return bounds
 
 
-# func _process(_delta: float) -> void:
-	# var mouse_cursor_position: Vector2 = get_viewport().get_mouse_position()
+func _process(_delta: float) -> void:
+	var mouse_cursor_position: Vector2 = get_viewport().get_mouse_position()
 
-	# var map: RID = get_world_3d().navigation_map
-	# # Do not query when the map has never synchronized and is empty.
-	# if NavigationServer3D.map_get_iteration_id(map) == 0:
-	# 	return
+	var map: RID = get_world_3d().navigation_map
+	# Do not query when the map has never synchronized and is empty.
+	if NavigationServer3D.map_get_iteration_id(map) == 0:
+		return
 
-	# var camera: Camera3D = get_viewport().get_camera_3d()
-	# var camera_ray_length: float = 1000.0
-	# var camera_ray_start: Vector3 = camera.project_ray_origin(mouse_cursor_position)
-	# var camera_ray_end: Vector3 = camera_ray_start + camera.project_ray_normal(mouse_cursor_position) * camera_ray_length
-	# var closest_point_on_navmesh: Vector3 = NavigationServer3D.map_get_closest_point_to_segment(
-	# 	map,
-	# 	camera_ray_start,
-	# 	camera_ray_end
-	# )
+	var camera: Camera3D = get_viewport().get_camera_3d()
+	var camera_ray_length: float = 1000.0
+	var camera_ray_start: Vector3 = camera.project_ray_origin(mouse_cursor_position)
+	var camera_ray_end: Vector3 = camera_ray_start + camera.project_ray_normal(mouse_cursor_position) * camera_ray_length
+	var closest_point_on_navmesh: Vector3 = NavigationServer3D.map_get_closest_point_to_segment(
+		map,
+		camera_ray_start,
+		camera_ray_end
+	)
 
-	# if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-	# 	path_start_position = closest_point_on_navmesh
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		path_start_position = closest_point_on_navmesh
 
-	# %DebugPaths.global_position = path_start_position
+	%DebugPaths.global_position = path_start_position
 
-	# %PathDebugCorridorFunnel.target_position = closest_point_on_navmesh
+	%PathDebugCorridorFunnel.target_position = closest_point_on_navmesh
 	# %PathDebugEdgeCentered.target_position = closest_point_on_navmesh
 
-	# %PathDebugCorridorFunnel.get_next_path_position()
+	%PathDebugCorridorFunnel.get_next_path_position()
 	# %PathDebugEdgeCentered.get_next_path_position()
 
 func _physics_process(delta: float) -> void:
 	_player_process(delta, player, playerNavAgent)
 	_player_process(delta, player2, playerNavAgent2)
-
-	# if monoNavAgent.is_navigation_finished():
-	# 	var currentIndex = checkpoints.find(monoCurrentCheckpoint)
-	# 	var next = wrap(currentIndex + 1, 0, 3)
-	# 	monoCurrentCheckpoint = checkpoints[next]
-	# 	monoNavAgent.set_target_position(monoCurrentCheckpoint.global_position)
-	# 	return
-	
-
-	#var next_position := monoNavAgent.get_next_path_position()
-	# get the steering based on whether the next waypoint is to the left or right (the dot product ?)
-	# then apply engine force forward or back 
-	# if we are going to hit an obsticle we need to 
-	# either slow down and avoid 
-	# or back away if stopped (or almost stopped)
-
-	#mono.steering = move_toward(mono.steering, next_position, 3.0 * delta)
-	# var offset := next_position - mono.global_position
-	# mono.global_position = mono.global_position.move_toward(next_position, delta * character_speed)
-
-	# # Make the robot look at the direction we're traveling.
-	# # Clamp Y to 0 so the robot only looks left and right, not up/down.
-	# offset.y = 0
-	# if not offset.is_zero_approx():
-	# 	mono.look_at(mono.global_position + offset, Vector3.UP)
 
 
 func _player_process(delta: float, p: Node3D, navAgent: NavigationAgent3D) -> void: 
@@ -220,3 +197,12 @@ func _player_process(delta: float, p: Node3D, navAgent: NavigationAgent3D) -> vo
 	offset.y = 0
 	if not offset.is_zero_approx():
 		p.look_at(p.global_position + offset, Vector3.UP)
+
+func get_next_position(node: Variant) -> Vector3: 
+	if(!currentCheckpointByNode.has(node)):
+		currentCheckpoint.set(node, 0)
+	var current = currentCheckpointByNode.get(node) as int
+	var next = wrap(current + 1, 0, 3)
+	currentCheckpoint.set(node, next)
+	return checkpoints[next]	
+	
