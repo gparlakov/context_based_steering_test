@@ -43,6 +43,6 @@ class Vector:
 		
 		if(prop != null):
 			var start = camera.unproject_position(object.global_transform.origin)
-			var end = camera.unproject_position(prop * scale)
+			var end = camera.unproject_position(object.global_transform.origin + prop * scale)
 			debugCanvas.draw_line(start, end, color, width)
 			debugCanvas.draw_triangle(end, start.direction_to(end), width*2, color)

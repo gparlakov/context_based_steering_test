@@ -23,12 +23,13 @@ func _ready() -> void:
 	danger.resize(num_rays)
 	ray_directions.resize(num_rays)
 	var debug = get_parent().get_node("DebugOverlay") as DebugOverlay
-	print(transform.basis)
 	for i in num_rays:
 		var angle = i * 2 * PI / num_rays
-		ray_directions[i] = transform.origin.rotated(Vector3.UP, angle)
+		ray_directions[i] = (global_transform.basis.z).rotated(Vector3.UP, angle)
 		var r = ray_directions[i]
-		debug.draw.add_vector(self, func(): return r, 4, 2) 
+		var color = Color(1,1,0) if i == 0 else Color(0,0,1)
+
+		debug.draw.add_vector(self, func():return r, 4, 2, color) 
 
 
 # # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -36,7 +37,7 @@ func _ready() -> void:
 # 	pass
 
 func _physics_process(_delta: float) -> void:
-	engine_force = clamp(25.5 - _delta * 5, -20 ,5.5)
+	engine_force = 20
 	steer_force = 2
 	steering = -0.05
 	# set_interest()

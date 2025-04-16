@@ -46,7 +46,9 @@ func _ready() -> void:
 
 	# player.set_meta("next_position", Vector3.ZERO)
 	# $DebugOverlay.draw.add_vector(player, "next_position", 1, 1, Color(1,0,1))
-	# $DebugOverlay.draw.add_vector(player, "next_position", 1, 1, Color(1,0,1))
+	# $DebugOverlay.draw.add_vector(mono, func(): 
+	# 	return (player.global_position - mono.global_position)
+	# , 1, 4, Color(1,0,1))
 
 static func create_region_chunks(chunks_root_node: Node, p_source_geometry: NavigationMeshSourceGeometryData3D, p_chunk_size: float, p_agent_radius: float) -> void:
 	# We need to know how many chunks are required for the input geometry.
