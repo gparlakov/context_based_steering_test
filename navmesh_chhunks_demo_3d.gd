@@ -9,10 +9,10 @@ static var chunk_id_to_region: Dictionary = {}
 
 var character_speed := 10
 
-# @onready var player: Node3D = $Obj
-# @onready var playerNavAgent := $Obj/NavigationAgent3D as NavigationAgent3D
-# @onready var player2: Node3D = $Obj2
-# @onready var playerNavAgent2 := $Obj2/NavigationAgent3D as NavigationAgent3D
+@onready var player: Node3D = $Obj
+@onready var playerNavAgent := $Obj/NavigationAgent3D as NavigationAgent3D
+@onready var player2: Node3D = $Obj2
+@onready var playerNavAgent2 := $Obj2/NavigationAgent3D as NavigationAgent3D
 @onready var checkpoints := [$ParseRootNode/Checkpoint_1, $ParseRootNode/Checkpoint_2, $ParseRootNode/Checkpoint_3, $ParseRootNode/Checkpoint_4, $ParseRootNode/Checkpoint_5, $ParseRootNode/Checkpoint_6, $ParseRootNode/Checkpoint_7 , $ParseRootNode/Checkpoint_8 ]
 @onready var currentCheckpoint: Area3D = $ParseRootNode/Checkpoint_1
 
@@ -175,9 +175,9 @@ func _process(_delta: float) -> void:
 	# %PathDebugCorridorFunnel.get_next_path_position()
 	# %PathDebugEdgeCentered.get_next_path_position()
 
-# func _physics_process(delta: float) -> void:
-	# _player_process(delta, player, playerNavAgent)
-	# _player_process(delta, player2, playerNavAgent2)
+func _physics_process(delta: float) -> void:
+	_player_process(delta, player, playerNavAgent)
+	_player_process(delta, player2, playerNavAgent2)
 
 
 func _player_process(delta: float, p: Node3D, navAgent: NavigationAgent3D) -> void: 
