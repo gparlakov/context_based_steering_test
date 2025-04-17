@@ -20,7 +20,8 @@ const DebugOverlay = preload("res://debug_overlay.gd")
 var debug: DebugOverlay
 var timer
 var turnDirection
-
+var backingOut := false
+var isRight := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -48,6 +49,9 @@ func _ready() -> void:
 	debug.draw.add_property(self, "danger")
 	debug.draw.add_property(self, "steering")
 	debug.draw.add_property(self, "turnDirection")
+	debug.draw.add_property(self, "backingOut")
+	debug.draw.add_property(self, "isRight")
+	debug.draw.add_property(self, "transform.basis.z - chosen_dir", func(): return str(-transform.basis.z - chosen_dir))
 
 # # Called every frame. 'delta' is the elapsed time since the previous frame.
 # func _process(delta: float) -> void:
@@ -58,7 +62,7 @@ func _physics_process(_delta: float) -> void:
 	for i in num_rays:
 		var angle = i * 2 * PI / num_rays
 		ray_directions[i] = (transform.basis.z).rotated(Vector3.UP, angle)
-	engine_force = 20
+	engine_force = 500
 
 	steer_force = 2
 	steering = 0
@@ -69,14 +73,28 @@ func _physics_process(_delta: float) -> void:
 	# set_danger()
 	choose_direction()
 	turnDirection = (transform.basis.z.normalized()).dot(chosen_dir.normalized())
-	print("==== chosen dir is %s" % ("to the back" if(turnDirection < 0) else "in front"))
-	var steerRight = -1 if (transform.basis.z - chosen_dir).x > 0 else 1
-	print("right when positive x %.2f" % steerRight)
-	steering = clampf((1 - abs(turnDirection))*steerRight, -0.4, 0.4)
+
+	isRight = transform.basis.z.signed_angle_to(chosen_dir, Vector3.UP) < 0
+	if(backingOut): 
+		# until we've turned sufficiently - keep it going back
+		backingOut = turnDirection < 0.4 
+	else:
+		# only change steer when we are not backing out
+		backingOut = turnDirection < 0.2
+		var steerDirection = -1 if isRight else 1
+		steerDirection = - (steerDirection * 5) if backingOut else steerDirection
+
+		## get the steering angle as what is left from the dot product to 1
+		## if the turnDirection is 45 degress that's dot product (cos) of 0.5 so we steer 0.5
+		## if the turnDirection is 22.5 degress that's dot product (cos) of 0.75 so we steer 0.25
+		var turn = 1 - abs(turnDirection)
+		steering = clampf(turn * steerDirection , -0.4, 0.4)
+	
 	# var desired_velocity = chosen_dir.rotated(rotation) * max_speed
 	# velocity = velocity.linear_interpolate(desired_velocity, steer_force)
 	# rotation = velocity.angle()
 	# move_and_collide(velocity * delta)
+	engine_force = -(abs(engine_force))  if backingOut else abs(engine_force)
 	
 	
 
