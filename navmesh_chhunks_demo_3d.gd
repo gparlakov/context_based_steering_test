@@ -13,7 +13,7 @@ var character_speed := 10
 @onready var playerNavAgent := $Obj/NavigationAgent3D as NavigationAgent3D
 @onready var player2: Node3D = $Obj2
 @onready var playerNavAgent2 := $Obj2/NavigationAgent3D as NavigationAgent3D
-@onready var checkpoints := [$ParseRootNode/Checkpoint_1, $ParseRootNode/Checkpoint_2, $ParseRootNode/Checkpoint_3 ]
+@onready var checkpoints := [$ParseRootNode/Checkpoint_1, $ParseRootNode/Checkpoint_2, $ParseRootNode/Checkpoint_3, $ParseRootNode/Checkpoint_4, $ParseRootNode/Checkpoint_5, $ParseRootNode/Checkpoint_6, $ParseRootNode/Checkpoint_7 , $ParseRootNode/Checkpoint_8 ]
 @onready var currentCheckpoint: Area3D = $ParseRootNode/Checkpoint_1
 
 
@@ -166,14 +166,15 @@ func _process(_delta: float) -> void:
 
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		path_start_position = closest_point_on_navmesh
+		get_tree().paused = !get_tree().paused
 
 	%DebugPaths.global_position = path_start_position
 
 	%PathDebugCorridorFunnel.target_position = closest_point_on_navmesh
-	# %PathDebugEdgeCentered.target_position = closest_point_on_navmesh
+	%PathDebugEdgeCentered.target_position = closest_point_on_navmesh
 
 	%PathDebugCorridorFunnel.get_next_path_position()
-	# %PathDebugEdgeCentered.get_next_path_position()
+	%PathDebugEdgeCentered.get_next_path_position()
 
 func _physics_process(delta: float) -> void:
 	_player_process(delta, player, playerNavAgent)
@@ -183,7 +184,7 @@ func _physics_process(delta: float) -> void:
 func _player_process(delta: float, p: Node3D, navAgent: NavigationAgent3D) -> void: 
 	if navAgent.is_navigation_finished():
 		var currentIndex = checkpoints.find(currentCheckpoint)
-		var next = wrap(currentIndex + 1, 0, 3)
+		var next = wrap(currentIndex + 1, 0, checkpoints.size())
 		currentCheckpoint = checkpoints[next]
 		navAgent.set_target_position(currentCheckpoint.global_position)
 		return
@@ -200,9 +201,9 @@ func _player_process(delta: float, p: Node3D, navAgent: NavigationAgent3D) -> vo
 
 func get_next_position(node: Variant) -> Vector3: 
 	if(!currentCheckpointByNode.has(node)):
-		currentCheckpointByNode[node] = 0
+		currentCheckpointByNode[node] = -1
 	var current = currentCheckpointByNode.get(node) as int
-	var next = wrap(current + 1, 0, 3)
+	var next = wrap(current + 1, 0, checkpoints.size())
 	currentCheckpointByNode[node] = next
 	return checkpoints[next].global_transform.origin
 	
