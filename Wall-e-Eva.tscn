@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://odyakrmr0cpa"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s2h6c"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x01ju"]
+vertex_color_is_srgb = true
+emission_enabled = true
+emission = Color(0.177321, 0.650495, 0.624412, 1)
+
+[sub_resource type="PrismMesh" id="PrismMesh_53e1d"]
+material = SubResource("StandardMaterial3D_x01ju")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xar4r"]
+albedo_color = Color(1, 0.223529, 1, 1)
+metallic = 0.43
+metallic_specular = 0.82
+
+[sub_resource type="TorusMesh" id="TorusMesh_ulhkw"]
+resource_name = "two"
+material = SubResource("StandardMaterial3D_xar4r")
+
+[node name="Obj" type="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.972451, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_s2h6c")
+
+[node name="head" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.63, 0, 0, 0, -0.0182083, -0.599854, 0, 0.823924, -0.0132564, 0, 1.15569, 0)
+mesh = SubResource("PrismMesh_53e1d")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.63, 0, 0, 0, 2.67357, 0, 0, 0, 0.6, 0, 0, 0)
+mesh = SubResource("TorusMesh_ulhkw")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]

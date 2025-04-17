@@ -113,4 +113,3 @@ class Property:
 			TYPE_CALLABLE:
 				s += (display as Callable).call()
 		label_ref.text = s
-

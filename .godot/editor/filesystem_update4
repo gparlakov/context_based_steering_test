@@ -1,5 +1,2 @@
-res://debug_draw_3d.gd
-res://navmesh_chhunks_demo_3d.gd
-res://debug_overlay.gd
 res://navmesh_chhunks_demo_3d.tscn
-res://mono.gd
+res://debug_draw_3d.gd

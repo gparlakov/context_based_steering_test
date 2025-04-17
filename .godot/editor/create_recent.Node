@@ -1,3 +1,8 @@
+Label3D
+Label
+HSlider
+Button
+CheckButton
 VBoxContainer
 MarginContainer
 MeshInstance3D
@@ -8,5 +13,3 @@ NavigationAgent3D
 VehicleWheel3D
 VehicleBody3D
 MultiMeshInstance3D
-CharacterBody3D
-Area3D

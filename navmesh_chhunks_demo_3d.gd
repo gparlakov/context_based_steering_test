@@ -166,15 +166,14 @@ func _process(_delta: float) -> void:
 
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		path_start_position = closest_point_on_navmesh
-		get_tree().paused = !get_tree().paused
 
 	%DebugPaths.global_position = path_start_position
 
-	%PathDebugCorridorFunnel.target_position = closest_point_on_navmesh
-	%PathDebugEdgeCentered.target_position = closest_point_on_navmesh
+	# %PathDebugCorridorFunnel.target_position = closest_point_on_navmesh
+	# %PathDebugEdgeCentered.target_position = closest_point_on_navmesh
 
-	%PathDebugCorridorFunnel.get_next_path_position()
-	%PathDebugEdgeCentered.get_next_path_position()
+	# %PathDebugCorridorFunnel.get_next_path_position()
+	# %PathDebugEdgeCentered.get_next_path_position()
 
 func _physics_process(delta: float) -> void:
 	_player_process(delta, player, playerNavAgent)

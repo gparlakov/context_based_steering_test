@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3 uid="uid://smscurbvwfg5"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s2h6c"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x01ju"]
+vertex_color_is_srgb = true
+emission_enabled = true
+emission = Color(0.177321, 0.650495, 0.624412, 1)
+
+[sub_resource type="PrismMesh" id="PrismMesh_53e1d"]
+material = SubResource("StandardMaterial3D_x01ju")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pdfgr"]
+albedo_color = Color(0.0862745, 1, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cep20"]
+material = SubResource("StandardMaterial3D_pdfgr")
+
+[node name="Obj2" type="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.60614, 0.972451, -2.007)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_s2h6c")
+
+[node name="head" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.63, 0, 0, 0, -0.0182083, -0.599854, 0, 0.823924, -0.0132564, 0, 1.15569, 0)
+mesh = SubResource("PrismMesh_53e1d")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.63, 0, 0, 0, 1.43472, 0, 0, 0, 0.6, 0, 0, 0)
+mesh = SubResource("BoxMesh_cep20")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
