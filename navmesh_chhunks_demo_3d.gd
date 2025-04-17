@@ -200,9 +200,9 @@ func _player_process(delta: float, p: Node3D, navAgent: NavigationAgent3D) -> vo
 
 func get_next_position(node: Variant) -> Vector3: 
 	if(!currentCheckpointByNode.has(node)):
-		currentCheckpoint.set(node, 0)
+		currentCheckpointByNode[node] = 0
 	var current = currentCheckpointByNode.get(node) as int
 	var next = wrap(current + 1, 0, 3)
-	currentCheckpoint.set(node, next)
-	return checkpoints[next]	
+	currentCheckpointByNode[node] = next
+	return checkpoints[next].global_transform.origin
 	

@@ -43,6 +43,11 @@ func _ready() -> void:
 
 	# debug
 	debug.draw.add_vector(self, func(): return chosen_dir)
+	debug.draw.add_property(self, "navAgent.target_position", func(): 
+		var t = navAgent.target_position
+		return " %.2f, %.2f, %.2f," % [t.x, t.y, t.z]
+	)
+	debug.draw.add_property(self, "chosen_dir")
 	debug.draw.add_property(self, "interest", func(): return interest.reduce(func(acc, i): return acc + ", %.2f" % i, ""))
 	# debug.draw.add_property(self, "linear_velocity")
 	# debug.draw.add_property(self, "timer_nice", func(): return "%.2f" % timer.time_left)
@@ -100,11 +105,12 @@ func _physics_process(_delta: float) -> void:
 
 func set_interest():
 	## when the navigation is finished and owner
-	if(navAgent.is_navigation_finished() && owner and owner.has_method("get_next_position") && false):
+	if(navAgent.is_navigation_finished() && owner and owner.has_method("get_next_position")):
+		navAgent.target_position = owner.get_next_position(self)
 	
-		var path_direction = owner.get_next_position(self)
+	if(navAgent.target_position && navAgent.target_position != Vector3.ZERO):
 		for i in num_rays:
-			var d = ray_directions[i].dot(path_direction)
+			var d = ray_directions[i].dot(navAgent.target_position)
 			interest[i] = max(0, d)
 	# If no world path, use default interest
 	else:
@@ -129,15 +135,15 @@ func set_danger():
 		danger[i] = 1.0 if result else 0.0
 
 func choose_direction():
-# 	# Eliminate interest in slots with danger
-# 	for i in num_rays:
-# 		if danger[i] > 0.0:
-# 			interest[i] = 0.0
-# 	# Choose direction based on remaining interest
-	chosen_dir = -(global_transform.origin - owner.path_start_position) if owner && owner.path_start_position else Vector3.RIGHT
-# 	for i in num_rays:
-# 		chosen_dir += ray_directions[i] * interest[i]
-# 	chosen_dir = chosen_dir.normalized()
+	# Eliminate interest in slots with danger
+	for i in num_rays:
+		if danger[i] > 0.0:
+			interest[i] = 0.0
+	# Choose direction based on remaining interest
+	chosen_dir = -(global_transform.origin - navAgent.target_position) if navAgent.target_position else Vector3.RIGHT
+	for i in num_rays:
+		chosen_dir += ray_directions[i] * interest[i]
+	chosen_dir = chosen_dir.normalized()
 
 
 
