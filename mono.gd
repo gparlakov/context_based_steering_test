@@ -81,12 +81,13 @@ func _physics_process(delta: float) -> void:
 		been_stuck_for_ms += delta
 		return
 	else:
+		been_stuck_for_ms = 0.0 
 		is_stuck = calculate_is_stuck(delta)
 
 	for i in num_rays:
 		var angle = i * 2 * PI / num_rays
 		ray_directions[i] = (transform.basis.z).rotated(Vector3.UP, angle).normalized()
-	engine_force = max_speed
+	# engine_force = max_speed
 
 	steering = 0
 	set_interest()
@@ -113,7 +114,7 @@ func _physics_process(delta: float) -> void:
 	# if(deltaDirectionToDesire < 0.5):
 	# when the direction we're going is too far away from the chosen - use lower engine force
 	@warning_ignore("integer_division", "narrowing_conversion")
-	engine_force = clampi(remap(deltaDirectionToDesire, 0.0, 0.7, max_speed / 5, max_speed), 0, max_speed)
+	engine_force = clampi(remap(deltaDirectionToDesire, -1, 0.7, max_speed / 5, max_speed), 0, max_speed)
 	engine_force = -(abs(engine_force)) if backingOut else abs(engine_force)
 
 	previous_linear_velocity = linear_velocity.length()
