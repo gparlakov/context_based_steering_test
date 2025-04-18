@@ -302,13 +302,13 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Mono" parent="." instance=ExtResource("3_p2eve")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.1961, 2.24041, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.5594, 2.24041, 0)
 
 [node name="Mono2" parent="." instance=ExtResource("3_p2eve")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -29.1961, 2.24041, 22.0518)
+transform = Transform3D(1, 0, 2.13163e-14, 0, 1, 0, -2.13163e-14, 0, 1, -23.6332, 2.24041, -13.4913)
 
 [node name="Mono3" parent="." instance=ExtResource("3_p2eve")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -4.14527, 2.24041, 22.0518)
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, -23.1472, 2.24041, -2.87381)
 
 [node name="Mono4" parent="." instance=ExtResource("3_p2eve")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.5752, 2.24041, -10.9419)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.9385, 2.24041, -10.9419)

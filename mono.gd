@@ -61,6 +61,8 @@ func _ready() -> void:
 	debug.draw.add_property(self, "is_stuck")
 	debug.draw.add_property(self, "engine_force")
 	debug.draw.add_property(self, "steering")
+	debug.draw.add_property(self, "dot to chosen", func(): return "%.3f" % basis.z.normalized().dot(chosen_direction))
+
 
 	# debug.draw.add_property(self, "chosen_dir")
 	# debug.draw.add_property(self, "interest", func(): return interest.reduce(func(acc, i): return acc + ", %.2f" % i, ""))
@@ -89,6 +91,7 @@ func _physics_process(delta: float) -> void:
 	if(is_initial):
 		is_initial = false
 		is_stuck = false
+		stuck_timeout *= 1.5
 
 	for i in num_rays:
 		var angle = i * 2 * PI / num_rays
@@ -115,11 +118,17 @@ func _physics_process(delta: float) -> void:
 		## if the turnDirection is 22.5 degress that's dot product (cos) of 0.75 so we steer 0.25
 	var turn = clampf(remap(turnDirection, 1.000, 0.89, 0.0, 0.4), 0, 0.41)
 	steering = turn * steerDirection
+
+	var deltaDirectionToDesire = basis.z.normalized().dot(chosen_direction)
+	# if(deltaDirectionToDesire < 0.5):
+	# when the direction we're going is too far away from the chosen - use lower engine force
+	@warning_ignore("integer_division", "narrowing_conversion")
+	engine_force = clampi(remap(deltaDirectionToDesire, 0.0, 0.7, max_speed / 5, max_speed), 0, max_speed)
 	engine_force = -(abs(engine_force)) if backingOut else abs(engine_force)
 
 	previous_linear_velocity = linear_velocity.length()
 	if(is_stuck):
-		engine_force = -(max_speed as float / 2)
+		engine_force = -(max_speed * 2 as float / 3)
 		steering = -steering if abs(steering) > 0.3 else 0.3 
 
 
