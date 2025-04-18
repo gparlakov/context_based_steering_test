@@ -1,0 +1,91 @@
+[gd_scene load_steps=3 format=3 uid="uid://c7roel4r67wn3"]
+
+[ext_resource type="Script" path="res://debug_overlay.gd" id="1_xe7vf"]
+[ext_resource type="Script" path="res://debug_draw_3d.gd" id="2_xp11h"]
+
+[node name="DebugOverlay" type="CanvasLayer"]
+process_mode = 3
+process_priority = 1
+follow_viewport_enabled = true
+script = ExtResource("1_xe7vf")
+
+[node name="DebugDraw3D" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_xp11h")
+
+[node name="PropsContainer" type="MarginContainer" parent="DebugDraw3D"]
+layout_mode = 0
+offset_right = 423.0
+offset_bottom = 647.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugDraw3D/PropsContainer"]
+layout_mode = 2
+
+[node name="PauseGame" type="Button" parent="."]
+offset_left = 2.0
+offset_top = 463.0
+offset_right = 146.0
+offset_bottom = 494.0
+text = "Pause Game"
+
+[node name="Restart" type="Button" parent="."]
+offset_left = 3.0
+offset_top = 502.0
+offset_right = 157.0
+offset_bottom = 533.0
+text = "Restart Game"
+
+[node name="FPS" type="HSlider" parent="."]
+offset_left = 14.0
+offset_top = 549.0
+offset_right = 144.0
+offset_bottom = 565.0
+tooltip_text = "FPS"
+min_value = 5.0
+max_value = 60.0
+step = 10.0
+value = 60.0
+rounded = true
+tick_count = 7
+ticks_on_borders = true
+
+[node name="Label" type="Label" parent="FPS"]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 22.0
+offset_right = 122.0
+offset_bottom = 45.0
+text = "5        FPS      60
+"
+
+[node name="Time" type="HSlider" parent="."]
+offset_left = 15.0
+offset_top = 603.0
+offset_right = 145.0
+offset_bottom = 619.0
+tooltip_text = "FPS"
+min_value = 0.2
+max_value = 1.0
+step = 0.1
+value = 1.0
+
+[node name="Label" type="Label" parent="Time"]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 22.0
+offset_right = 122.0
+offset_bottom = 45.0
+text = "20%Time  100%
+"
+
+[connection signal="pressed" from="PauseGame" to="." method="_on_pause_button_toggled"]
+[connection signal="pressed" from="Restart" to="." method="_on_restart_pressed"]
+[connection signal="value_changed" from="FPS" to="." method="_on_fps_value_changed"]
+[connection signal="value_changed" from="Time" to="." method="_on_time_value_changed"]
