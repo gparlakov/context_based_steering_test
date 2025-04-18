@@ -401,6 +401,7 @@ physics_material_override = SubResource("PhysicsMaterial_p577t")
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, -0.5, 0)
 script = ExtResource("2_4bs5m")
+max_speed = 550
 look_ahead = 10
 
 [node name="VehicleWheel3D" type="VehicleWheel3D" parent="Mono"]
@@ -442,7 +443,7 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.3
 shape = SubResource("CapsuleShape3D_awg2w")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Mono/CollisionShape3D"]
-transform = Transform3D(1.46743, 0, 0, 0, 1.86017, -7.10543e-15, 0, 0, 1.63429, 0, 0, 0)
+transform = Transform3D(2.01549, 0, 0, 0, 2.71166, -7.10543e-15, 0, 7.10543e-15, 2.05261, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_3bipe")
 
 [node name="Vehicle name" type="Label3D" parent="Mono"]
@@ -454,12 +455,13 @@ font_size = 135
 script = ExtResource("5_kewt0")
 
 [node name="Mono2" type="VehicleBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.183, 1.577, -6.16234)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.9466, 1.577, -13.4608)
 mass = 150.0
 physics_material_override = SubResource("PhysicsMaterial_p577t")
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, -0.5, 0)
 script = ExtResource("2_4bs5m")
+max_speed = 600
 look_ahead = 10
 
 [node name="VehicleWheel3D" type="VehicleWheel3D" parent="Mono2"]
@@ -501,11 +503,11 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.3
 shape = SubResource("CapsuleShape3D_awg2w")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Mono2/CollisionShape3D"]
-transform = Transform3D(1.46743, 0, 0, 0, 1.86017, -7.10543e-15, 0, 0, 1.63429, 0, 0, 0)
+transform = Transform3D(2.01549, 0, 0, 0, 2.71166, -7.10543e-15, 0, 7.10543e-15, 2.05261, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_3bipe")
 
-[node name="Vehicle name2" type="Label3D" parent="Mono2"]
-transform = Transform3D(1, 0, 0, 0, 0.732543, 0.680721, 0, -0.680721, 0.732543, 0, 2.818, 0)
+[node name="Vehicle name" type="Label3D" parent="Mono2"]
+transform = Transform3D(1, 0, 0, 0, 0.732543, 0.680721, 0, -0.680721, 0.732543, 0, 2.81768, 0)
 modulate = Color(0.188235, 1, 1, 1)
 outline_modulate = Color(0, 0, 0, 0.913725)
 text = "Mono2"
@@ -513,13 +515,13 @@ font_size = 135
 script = ExtResource("5_kewt0")
 
 [node name="Mono3" type="VehicleBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.183, 1.577, -18.6227)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.6888, 1.577, -22.2645)
 mass = 150.0
 physics_material_override = SubResource("PhysicsMaterial_p577t")
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, -0.5, 0)
 script = ExtResource("2_4bs5m")
-max_speed = 500
+max_speed = 700
 look_ahead = 10
 
 [node name="VehicleWheel3D" type="VehicleWheel3D" parent="Mono3"]
@@ -561,14 +563,73 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.3
 shape = SubResource("CapsuleShape3D_awg2w")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Mono3/CollisionShape3D"]
-transform = Transform3D(1.46743, 0, 0, 0, 1.86017, -7.10543e-15, 0, 0, 1.63429, 0, 0, 0)
+transform = Transform3D(2.01549, 0, 0, 0, 2.71166, -7.10543e-15, 0, 7.10543e-15, 2.05261, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_3bipe")
 
-[node name="Vehicle name3" type="Label3D" parent="Mono3"]
-transform = Transform3D(1, 0, 0, 0, 0.732543, 0.680721, 0, -0.680721, 0.732543, 0, 2.818, 0)
+[node name="Vehicle name" type="Label3D" parent="Mono3"]
+transform = Transform3D(1, 0, 0, 0, 0.732543, 0.680721, 0, -0.680721, 0.732543, 0, 2.81768, 0)
 modulate = Color(0.188235, 1, 1, 1)
 outline_modulate = Color(0, 0, 0, 0.913725)
 text = "Mono3"
+font_size = 135
+script = ExtResource("5_kewt0")
+
+[node name="Mono4" type="VehicleBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.9466, 1.577, -22.2645)
+mass = 150.0
+physics_material_override = SubResource("PhysicsMaterial_p577t")
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, -0.5, 0)
+script = ExtResource("2_4bs5m")
+look_ahead = 10
+
+[node name="VehicleWheel3D" type="VehicleWheel3D" parent="Mono4"]
+transform = Transform3D(1, 0, 0, 0, 2.02589, 0, 0, 0, 2.02589, -1.5, -0.112938, 1.32839)
+use_as_steering = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Mono4/VehicleWheel3D"]
+transform = Transform3D(-2.2116e-08, -1, 0, 0.505954, -4.37114e-08, 0, 0, 0, 0.505954, 0, 0, 0)
+mesh = SubResource("TorusMesh_y37mu")
+
+[node name="VehicleWheel3D2" type="VehicleWheel3D" parent="Mono4"]
+transform = Transform3D(1, 0, 0, 0, 2.02589, 0, 0, 0, 2.02589, 1.5, -0.112938, 1.32839)
+use_as_steering = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Mono4/VehicleWheel3D2"]
+transform = Transform3D(-2.2116e-08, -1, 0, 0.505954, -4.37114e-08, 0, 0, 0, 0.505954, 0, 0, 0)
+mesh = SubResource("TorusMesh_y37mu")
+
+[node name="VehicleWheel3D3" type="VehicleWheel3D" parent="Mono4"]
+transform = Transform3D(1, 0, 0, 0, 2.02589, 0, 0, 0, 2.02589, -1.5, -0.112938, -1.38515)
+use_as_traction = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Mono4/VehicleWheel3D3"]
+transform = Transform3D(-2.2116e-08, -1, 0, 0.505954, -4.37114e-08, 0, 0, 0, 0.505954, 0, 0, 0)
+mesh = SubResource("TorusMesh_y37mu")
+
+[node name="VehicleWheel3D4" type="VehicleWheel3D" parent="Mono4"]
+transform = Transform3D(1, 0, 0, 0, 2.02589, 0, 0, 0, 2.02589, 1.5, -0.112938, -1.38515)
+use_as_traction = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Mono4/VehicleWheel3D4"]
+transform = Transform3D(-2.2116e-08, -1, 0, 0.505954, -4.37114e-08, 0, 0, 0, 0.505954, 0, 0, 0)
+mesh = SubResource("TorusMesh_y37mu")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="Mono4"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mono4"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.37602, -0.0728941)
+shape = SubResource("CapsuleShape3D_awg2w")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Mono4/CollisionShape3D"]
+transform = Transform3D(2.01549, 0, 0, 0, 2.71166, -7.10543e-15, 0, 7.10543e-15, 2.05261, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_3bipe")
+
+[node name="Vehicle name" type="Label3D" parent="Mono4"]
+transform = Transform3D(1, 0, 0, 0, 0.732543, 0.680721, 0, -0.680721, 0.732543, 0, 2.81768, 0)
+modulate = Color(0.188235, 1, 1, 1)
+outline_modulate = Color(0, 0, 0, 0.913725)
+text = "Mono4"
 font_size = 135
 script = ExtResource("5_kewt0")
 
