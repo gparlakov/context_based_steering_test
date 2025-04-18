@@ -11,7 +11,7 @@ func _ready():
 		var ev = InputEventKey.new()
 		ev.keycode = KEY_BACKSLASH
 		InputMap.action_add_event("toggle_debug", ev)
-	_on_time_value_changed(0.2)
+	# _on_time_value_changed(0.2)
 	# get_window().mode = Window.MODE_EXCLUSIVE_FULLSCREEN
 	
 

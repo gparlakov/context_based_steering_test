@@ -1,11 +1,13 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1744961572
+::res://::1744982932
 debug_draw_3d.gd::GDScript::-1::1744912884::0::1::::<>Control<>::
-debug_overlay.gd::GDScript::-1::1744961308::0::1::::<>CanvasLayer<>::
+debug_overlay.gd::GDScript::-1::1744979593::0::1::::<>CanvasLayer<>::
+debug_overlay.tscn::PackedScene::7054836590067896574::1744964684::0::1::::<><>::res://debug_overlay.gd<>res://debug_draw_3d.gd
 icon.webp::CompressedTexture2D::3152216653816699855::1744749168::1744749291::1::::<><>::
-mono.gd::GDScript::-1::1744961542::0::1::::<>VehicleBody3D<>::
+mono.gd::GDScript::-1::1744980774::0::1::::<>VehicleBody3D<>::
+mono.tscn::PackedScene::43151478250293433::1744982926::0::1::::<><>::res://mono.gd<>res://vehicle_name.gd
 navmesh_chhunks_demo_3d.gd::GDScript::-1::1744960518::0::1::::<>Node3D<>::
-navmesh_chhunks_demo_3d.tscn::PackedScene::5371213688694515636::1744961359::0::1::::<><>::res://navmesh_chhunks_demo_3d.gd<>res://debug_overlay.gd<>res://mono.gd<>res://debug_draw_3d.gd<>res://vehicle_name.gd
+navmesh_chhunks_demo_3d.tscn::PackedScene::5371213688694515636::1744982926::0::1::::<><>::res://navmesh_chhunks_demo_3d.gd<>uid://c7roel4r67wn3::::res://debug_overlay.tscn<>uid://u5x0rrgli1n::::res://mono.tscn
 README.md::TextFile::-1::1744749168::0::1::::<><>::
 vehicle_name.gd::GDScript::-1::1744912279::0::1::::<>Label3D<>::
 Wall-e-Eva-1.tscn::PackedScene::1289269272793953502::1744912990::0::1::::<><>::

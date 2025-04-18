@@ -23,7 +23,12 @@ var timer
 var turnDirection
 var backingOut := false
 var isRight := false
-
+var is_stuck := false
+var is_initial := true
+var previous_linear_velocity := 0.0
+var delta_velocity := 0.0
+var stuck_timeout := 3.0
+var stuck_elapsed := 0.0
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	navAgent.target_desired_distance = 2.5
@@ -41,33 +46,49 @@ func _ready() -> void:
 		ray_directions[i] = (transform.basis.z).rotated(Vector3.UP, angle)
 
 	# debug
-	for i in num_rays:
+	# for i in num_rays:
 		# debug.draw.add_vector(self, func():return ray_directions[i].normalized(), 3, 2, Color(1,1,1) if i == 0 else Color(0.2, 1, 0.2) )
-		debug.draw.add_vector(self, func(): return ray_directions_by_interest_and_danger[i], 1, 2, Color(1,1,0))
-		debug.draw.add_vector(self, func(): return ray_danger[i], 2, 2, Color(1, 0, 0))
+		# debug.draw.add_vector(self, func(): return ray_directions_by_interest_and_danger[i], 1, 2, Color(1,1,0))
+		# debug.draw.add_vector(self, func(): return ray_danger[i], 2, 2, Color(1, 0, 0))
 
-	debug.draw.add_vector(self, func(): return chosen_direction.normalized(), 4, 2, Color(0, 0, 0.5))
-	debug.draw.add_property(self, "navAgent.target_position", func(): 
-		var t = navAgent.target_position
-		return " %.2f, %.2f, %.2f," % [t.x, t.y, t.z]
-	)
+	# debug.draw.add_vector(self, func(): return chosen_direction.normalized(), 4, 2, Color(0, 0, 0.5))
+	# debug.draw.add_property(self, "navAgent.target_position", func(): 
+	# 	var t = navAgent.target_position
+	# 	return " %.2f, %.2f, %.2f," % [t.x, t.y, t.z]
+	# )
+	# debug.draw.add_property(self, "previous_linear_velocity")
+	# debug.draw.add_property(self, "delta_velocity")
+	debug.draw.add_property(self, "is_stuck")
+	debug.draw.add_property(self, "engine_force")
+	debug.draw.add_property(self, "steering")
+
 	# debug.draw.add_property(self, "chosen_dir")
 	# debug.draw.add_property(self, "interest", func(): return interest.reduce(func(acc, i): return acc + ", %.2f" % i, ""))
-	debug.draw.add_property(self, "ray_directions_by_interest", func(): return ray_directions_by_interest.reduce(func(acc, i): return acc + ", [%.2f, %.2f, %.2f]" % [i.x, i.y, i.z], ""))
+	# debug.draw.add_property(self, "ray_directions_by_interest", func(): return ray_directions_by_interest.reduce(func(acc, i): return acc + ", [%.2f, %.2f, %.2f]" % [i.x, i.y, i.z], ""))
 	# debug.draw.add_property(self, "linear_velocity")
 	# debug.draw.add_property(self, "timer_nice", func(): return "%.2f" % timer.time_left)
-	debug.draw.add_property(self, "danger")
+	# debug.draw.add_property(self, "danger")
 	# debug.draw.add_property(self, "steering")
 	# debug.draw.add_property(self, "turnDirection")
 	# debug.draw.add_property(self, "backingOut")
 	# debug.draw.add_property(self, "isRight")
 	# debug.draw.add_property(self, "transform.basis.z - chosen_dir", func(): return str(-transform.basis.z - chosen_dir))
 
-# # Called every frame. 'delta' is the elapsed time since the previous frame.
-# func _process(delta: float) -> void:
-# 	pass
+func _physics_process(delta: float) -> void:
+	if(is_stuck && stuck_elapsed < stuck_timeout):
+		stuck_elapsed += delta
+		is_initial = true # after stuck we don't want to restuck again
+		return
+	else:
+		is_stuck = false
+		stuck_elapsed = 0.0
 
-func _physics_process(_delta: float) -> void:
+	delta_velocity = linear_velocity.length() - previous_linear_velocity
+	is_stuck = abs(delta_velocity) < 0.01 && abs(previous_linear_velocity) < 0.1
+
+	if(is_initial):
+		is_initial = false
+		is_stuck = false
 
 	for i in num_rays:
 		var angle = i * 2 * PI / num_rays
@@ -95,6 +116,12 @@ func _physics_process(_delta: float) -> void:
 	var turn = clampf(remap(turnDirection, 1.000, 0.89, 0.0, 0.4), 0, 0.41)
 	steering = turn * steerDirection
 	engine_force = -(abs(engine_force)) if backingOut else abs(engine_force)
+
+	previous_linear_velocity = linear_velocity.length()
+	if(is_stuck):
+		engine_force = -(max_speed as float / 2)
+		steering = -steering if abs(steering) > 0.3 else 0.3 
+
 
 func set_interest():
 	## when the navigation is finished and owner
