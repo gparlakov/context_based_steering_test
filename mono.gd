@@ -9,6 +9,7 @@ extends VehicleBody3D
 # context array
 var ray_directions :Array[Vector3]= []
 var ray_directions_by_interest :Array[Vector3]= []
+var ray_directions_by_interest_and_danger :Array[Vector3]= []
 var interest = []
 var danger = []
 var ray_danger = []
@@ -33,6 +34,7 @@ func _ready() -> void:
 	danger.resize(num_rays)
 	ray_directions.resize(num_rays)
 	ray_directions_by_interest.resize(num_rays)
+	ray_directions_by_interest_and_danger.resize(num_rays)
 	ray_danger.resize(num_rays)
 
 	debug = get_parent().get_node("DebugOverlay") as DebugOverlay
@@ -41,14 +43,15 @@ func _ready() -> void:
 		ray_directions[i] = (transform.basis.z).rotated(Vector3.UP, angle)
 
 	# timer for engine force 
-	timer = Timer.new()
-	add_child(timer)
-	timer.one_shot = true;
-	timer.start(4)
+	# timer = Timer.new()
+	# add_child(timer)
+	# timer.one_shot = true;
+	# timer.start(4)
 
 	# debug
 	for i in num_rays:
-		debug.draw.add_vector(self, func():return ray_directions_by_interest[i].normalized(), 3, 2, Color(1,1,0))
+		# debug.draw.add_vector(self, func():return ray_directions[i].normalized(), 3, 2, Color(1,1,1) if i == 0 else Color(0.2, 1, 0.2) )
+		debug.draw.add_vector(self, func(): return ray_directions_by_interest_and_danger[i], 1, 2, Color(1,1,0))
 		debug.draw.add_vector(self, func(): return ray_danger[i], 2, 2, Color(1, 0, 0))
 
 	debug.draw.add_vector(self, func(): return chosen_dir.normalized(), 4, 1, Color(0, 1, 0))
@@ -57,11 +60,12 @@ func _ready() -> void:
 		var t = navAgent.target_position
 		return " %.2f, %.2f, %.2f," % [t.x, t.y, t.z]
 	)
-	debug.draw.add_property(self, "chosen_dir")
-	debug.draw.add_property(self, "interest", func(): return interest.reduce(func(acc, i): return acc + ", %.2f" % i, ""))
+	# debug.draw.add_property(self, "chosen_dir")
+	# debug.draw.add_property(self, "interest", func(): return interest.reduce(func(acc, i): return acc + ", %.2f" % i, ""))
+	debug.draw.add_property(self, "ray_directions_by_interest", func(): return ray_directions_by_interest.reduce(func(acc, i): return acc + ", [%.2f, %.2f, %.2f]" % [i.x, i.y, i.z], ""))
 	# debug.draw.add_property(self, "linear_velocity")
 	# debug.draw.add_property(self, "timer_nice", func(): return "%.2f" % timer.time_left)
-	# debug.draw.add_property(self, "danger")
+	debug.draw.add_property(self, "danger")
 	# debug.draw.add_property(self, "steering")
 	# debug.draw.add_property(self, "turnDirection")
 	# debug.draw.add_property(self, "backingOut")
@@ -121,7 +125,7 @@ func set_interest():
 	if(navAgent.target_position && navAgent.target_position != Vector3.ZERO):
 		var target = -(global_transform.origin - navAgent.target_position);
 		for i in num_rays:
-			var d = ray_directions[i].normalized().dot(target.normalized())
+			var d = ray_directions[i].normalized().dot(target)
 			interest[i] = max(0, d)
 			ray_directions_by_interest[i] = ray_directions[i] * interest[i]
 	# If no world path, use default interest
@@ -145,10 +149,13 @@ func set_danger():
 			[self.get_rid()]
 		))
 		# result.position holds the intersect point
+		ray_danger[i] = Vector3.ZERO
 		if result && result.has("position"): 
-			print("===== %s ray collided with %s" % [self.name, result.collider.name])
+			# print("===== %s ray collided with %s" % [self.name, result.collider.name])
+			ray_danger[i] = ray_directions[i]
 		danger[i] = 1.0 if result else 0.0
-		ray_danger[i] = -(global_transform.origin - result.position) if result.has("position") else Vector3.ZERO
+		ray_directions_by_interest_and_danger[i] = Vector3.ZERO if result else ray_directions_by_interest[i]
+		# ray_danger[i] = -(global_transform.origin - result.position) if result.has("position") else Vector3.ZERO
 
 func choose_direction():
 	# Eliminate interest in slots with danger
@@ -156,7 +163,8 @@ func choose_direction():
 		if ray_danger[i] != Vector3.ZERO:
 			interest[i] = 0.0
 	# Choose direction based on remaining interest
-	chosen_dir = -(global_transform.origin - navAgent.target_position) if navAgent.target_position else Vector3.RIGHT
+	# chosen_dir = -(global_transform.origin - navAgent.target_position) if navAgent.target_position else Vector3.RIGHT
+	chosen_direction = Vector3.ZERO
 	for i in num_rays:
 		chosen_direction += ray_directions[i] * interest[i]
 	chosen_direction = chosen_direction.normalized()

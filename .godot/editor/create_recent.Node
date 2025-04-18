@@ -1,7 +1,7 @@
+Button
 Label3D
 Label
 HSlider
-Button
 CheckButton
 VBoxContainer
 MarginContainer
@@ -12,4 +12,3 @@ CanvasLayer
 NavigationAgent3D
 VehicleWheel3D
 VehicleBody3D
-MultiMeshInstance3D
