@@ -68,7 +68,8 @@ transform = Transform3D(2.01549, 0, 0, 0, 2.71166, -7.10543e-15, 0, 7.10543e-15,
 mesh = SubResource("CapsuleMesh_3bipe")
 
 [node name="Vehicle name" type="Label3D" parent="."]
-transform = Transform3D(0.476637, 0.22343, -0.850233, -0.222057, 0.966399, 0.129473, 0.850593, 0.127089, 0.510236, 0.272877, 2.81768, 0.225729)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.818, 0.226)
+billboard = 1
 modulate = Color(0.188235, 1, 1, 1)
 outline_modulate = Color(0, 0, 0, 0.913725)
 text = "Mono"

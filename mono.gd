@@ -4,6 +4,7 @@ extends VehicleBody3D
 @export var look_ahead := 5
 @export var num_rays := 16
 @onready var navAgent = $NavigationAgent3D as NavigationAgent3D
+@export var stuck_lenght = 10
 
 # context array
 var ray_directions :Array[Vector3]= []
@@ -28,7 +29,8 @@ var is_initial := true
 var previous_linear_velocity := 0.0
 var delta_velocity := 0.0
 var stuck_timeout := 3.0
-var stuck_elapsed := 0.0
+var been_stuck_for_ms := 0.0
+var stuck_total_time := 0.0
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	navAgent.target_desired_distance = 2.5
@@ -40,12 +42,12 @@ func _ready() -> void:
 	ray_directions_by_interest_and_danger.resize(num_rays)
 	ray_danger.resize(num_rays)
 
-	debug = get_parent().get_node("DebugOverlay") as DebugOverlay
 	for i in num_rays:
 		var angle = i * 2 * PI / num_rays
 		ray_directions[i] = (transform.basis.z).rotated(Vector3.UP, angle)
 
 	# debug
+	debug = get_parent().get_node("DebugOverlay") as DebugOverlay
 	# for i in num_rays:
 		# debug.draw.add_vector(self, func():return ray_directions[i].normalized(), 3, 2, Color(1,1,1) if i == 0 else Color(0.2, 1, 0.2) )
 		# debug.draw.add_vector(self, func(): return ray_directions_by_interest_and_danger[i], 1, 2, Color(1,1,0))
@@ -62,8 +64,6 @@ func _ready() -> void:
 	debug.draw.add_property(self, "engine_force")
 	debug.draw.add_property(self, "steering")
 	debug.draw.add_property(self, "dot to chosen", func(): return "%.3f" % basis.z.normalized().dot(chosen_direction))
-
-
 	# debug.draw.add_property(self, "chosen_dir")
 	# debug.draw.add_property(self, "interest", func(): return interest.reduce(func(acc, i): return acc + ", %.2f" % i, ""))
 	# debug.draw.add_property(self, "ray_directions_by_interest", func(): return ray_directions_by_interest.reduce(func(acc, i): return acc + ", [%.2f, %.2f, %.2f]" % [i.x, i.y, i.z], ""))
@@ -77,21 +77,11 @@ func _ready() -> void:
 	# debug.draw.add_property(self, "transform.basis.z - chosen_dir", func(): return str(-transform.basis.z - chosen_dir))
 
 func _physics_process(delta: float) -> void:
-	if(is_stuck && stuck_elapsed < stuck_timeout):
-		stuck_elapsed += delta
-		is_initial = true # after stuck we don't want to restuck again
+	if(is_stuck && been_stuck_for_ms < stuck_timeout):
+		been_stuck_for_ms += delta
 		return
 	else:
-		is_stuck = false
-		stuck_elapsed = 0.0
-
-	delta_velocity = linear_velocity.length() - previous_linear_velocity
-	is_stuck = abs(delta_velocity) < 0.01 && abs(previous_linear_velocity) < 0.1
-
-	if(is_initial):
-		is_initial = false
-		is_stuck = false
-		stuck_timeout *= 1.5
+		is_stuck = calculate_is_stuck(delta)
 
 	for i in num_rays:
 		var angle = i * 2 * PI / num_rays
@@ -182,3 +172,13 @@ func choose_direction():
 	for i in num_rays:
 		chosen_direction += ray_directions[i] * interest[i]
 	chosen_direction = chosen_direction.normalized()
+
+func calculate_is_stuck(delta: float) -> bool:
+	delta_velocity = linear_velocity.length() - previous_linear_velocity
+	var isStuck = abs(delta_velocity) < 0.01 && abs(previous_linear_velocity) < 0.1
+
+	if(isStuck):
+		stuck_total_time += delta
+	else:
+		stuck_total_time = 0.0
+	return stuck_total_time > 0.5
